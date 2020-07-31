@@ -9,6 +9,5 @@
     "[python]": {
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true
-    },
-    "python.pythonPath": "/bin/python3"
+    }
 }
