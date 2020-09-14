@@ -165,51 +165,6 @@ def on_mouse_press(x, y, button, modifiers):
     print(f"x: {xpint}, y: {ypint}")
 
 
-@window.event
-def on_mouse_release(x, y, button, modifiers):
-    pass
-
-
-@window.event
-def on_mouse_drag(x, y, dx, dy, button, modifiers):
-    pass
-
-
-@window.event
-def on_mouse_motion(x, y, dx, dy):
-    pass
-
-
-@window.event
-def on_mouse_enter(x, y):
-    pass
-
-
-@window.event
-def on_mouse_leave(x, y):
-    pass
-
-
-@window.event
-def on_mouse_scroll(x, y, scroll_x, scroll_y):
-    pass
-
-
-@window.event
-def on_key_release(symbol, modifiers):
-    pass
-
-
-@window.event
-def on_text(text):
-    pass
-
-
-@window.event
-def on_text_motion(motion):
-    pass
-
-
 pyglet.app.run()
 window.push_handlers(
     pyglet.window.event.WindowEventLogger(
