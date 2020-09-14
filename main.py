@@ -143,7 +143,26 @@ def on_mouse_press(x, y, button, modifiers):
 
             print(numpy.rot90(Grid))
 
-    # TODO: Implement victory condition.
+    # TODO: Implement better victory condition check.
+    for row in Grid:
+        if (row[0] == row[1] == row[2]) and (row[0] != 0 or row[1] or row[2]):
+            print(f"Player {row[0]} won!")
+
+    for row in numpy.rot90(Grid):
+        if (row[0] == row[1] == row[2]) and (row[0] != 0 or row[1] or row[2]):
+            print(f"Player {row[0]} won!")
+
+    if (Grid[0][0] == Grid[1][1] == Grid[2][2]) and (Grid[0][0] != 0
+                                                     or Grid[1][1] != 0
+                                                     or Grid[2][2] != 0):
+        print(f"Player {Grid[0][0]} won!")
+
+    if (Grid[0][2] == Grid[1][1] == Grid[2][0]) and (Grid[0][2] != 0
+                                                     or Grid[1][1] != 0
+                                                     or Grid[0][2] != 0):
+        print(f"Player {Grid[0][2]} won!")
+
+    print(f"x: {xpint}, y: {ypint}")
 
 
 @window.event
