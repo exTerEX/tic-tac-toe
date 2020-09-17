@@ -1,0 +1,8 @@
+--requirement requirements.txt
+
+# Linter
+pylint
+pydocstyle
+
+# Autoformatter
+yapf
