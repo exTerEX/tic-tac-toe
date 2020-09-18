@@ -1,13 +1,88 @@
 """ Class for window creation and handling. """
 
+# std
 import os
+import tkinter
+import json
+# 3rd
 import numpy
 import pyglet
-import tkinter
+import pyglet.gl as gl
+import pyglet.resource as resource
+
+# loc
+#from .core.grid import Grid
+#from .core.menu import Menu
+
+# Global constant variables
+BACKGROUND_COLOR: tuple = tuple((0.95, 0.98, 0.94))
+
+# Define window and global window properties
+window = pyglet.window.Window(500,
+                              600,
+                              "Tic-Tac-Toe",
+                              resizable=True,
+                              visible=False)
+
+# Set resource search path and reindex
+resource.path = json.load(open("tic-tac-toe/resources/source.json"))
+resource.reindex()
+
+# Set icons
+window.set_icon(resource.image("3XT-016.png"), resource.image("3XT-032.png"),
+                resource.image("3XT-064.png"), resource.image("3XT-128.png"))
+
+# Set background
+gl.glClearColor(*BACKGROUND_COLOR, -1.0)
+
+# Make window visible
+window.set_visible()
 
 
+@window.event
+def on_draw():
+    window.clear()
+
+
+@window.event
+def on_resize(width, height):
+    gl.glViewport(0, 0, width, height)
+    gl.glMatrixMode(gl.GL_PROJECTION)
+    gl.glLoadIdentity()
+    gl.glOrtho(0, width, 0, height, -1, 1)
+    gl.glMatrixMode(gl.GL_MODELVIEW)
+
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    pass
+
+
+if __name__ == '__main__':
+    pyglet.app.run()
+
+#
+#
+"""class Main(pyglet.window.Window):
+    def __init__(self, *args, **kwargs) -> None:
+        super(Main, self).__init__(*args, **kwargs)
+        gl.glClearColor(*BACKGROUND_COLOR, -1.0)  # Background color
+
+        # Set minimum window size
+        self.set_minimum_size(500, 600)
+
+    def on_draw(self):
+        self.clear()
+
+    def on_resize(self, width, height):
+        gl.glViewport(0, 0, width, height)
+
+
+if __name__ == '__main__':
+    window = Main(500, 600, "My Pyglet Window", resizable=True)
+    pyglet.app.run()"""
+"""
 def draw_grid(win: object, lw: int = 3, color=(0, 0, 0)) -> object:
-    """ Function to draw the sudoku grid. """
     index = 1
 
     for x_pos, y_pos in list(
@@ -34,7 +109,7 @@ def draw_grid(win: object, lw: int = 3, color=(0, 0, 0)) -> object:
 
 # TODO: MAKE FUCKING LOGICAL WITHOUT USE OF CONSTANTS...
 def draw_char(win: object, data: numpy.array):
-    """"""
+    """ """
     for row in range(0, 3):
         for col in range(0, 3):
             if numpy.rot90(data)[row][col] != 0:
@@ -87,10 +162,10 @@ window = pyglet.window.Window(width=WIDTH,
 pyglet.gl.glClearColor(1., 1., 1., -1)
 
 # Sets the window icon
-window.set_icon(*(pyglet.image.load("assets/icon/ico_16.png"),
-                  pyglet.image.load("assets/icon/ico_32.png"),
-                  pyglet.image.load("assets/icon/ico_64.png"),
-                  pyglet.image.load("assets/icon/ico_128.png")))
+window.set_icon(*(pyglet.resource.image("assets/icon/ico_16.png"),
+                  pyglet.resource.image("assets/icon/ico_32.png"),
+                  pyglet.resource.image("assets/icon/ico_64.png"),
+                  pyglet.resource.image("assets/icon/ico_128.png")))
 
 # Grid centers
 y_points = [(window.height * 0.95 - window.height * 0.15) * ratio
@@ -101,7 +176,6 @@ x_points = [(window.width * 0.95 - window.width * 0.05) * i
 
 @window.event
 def on_resize(width, height):
-    """ Function to force correct window ratio to PyGlet. """
     pyglet.gl.glClearColor(1., 1., 1., -1)
 
     window.set_size(width, numpy.uint16(width * (6 / 5)))
@@ -109,7 +183,6 @@ def on_resize(width, height):
 
 @window.event
 def on_draw():
-    """ Graphical drawing function """
     pyglet.gl.glClearColor(1., 1., 1., -1)
 
     window.clear()
@@ -141,6 +214,7 @@ def on_mouse_press(x, y, button, modifiers):
             count += 1
             draw_char(window, Grid)
 
+            # Debugging
             print(numpy.rot90(Grid))
 
     # TODO: Implement better victory condition check.
@@ -162,10 +236,14 @@ def on_mouse_press(x, y, button, modifiers):
                                                      or Grid[0][2] != 0):
         print(f"Player {Grid[0][2]} won!")
 
-    print(f"x: {xpint}, y: {ypint}")
-
 
 pyglet.app.run()
+
+logpath = "log/"
+if not os.path.exists(logpath):
+    os.mkdir(logpath)
+
 window.push_handlers(
     pyglet.window.event.WindowEventLogger(
-        open(os.path.join("log/", "event.log"), "w")))
+        open(os.path.join(logpath, "event.log"), "w")))
+"""
