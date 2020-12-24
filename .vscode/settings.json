@@ -4,8 +4,7 @@
         "**/__init__.py": true
     },
     "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.formatting.provider": "yapf",
+    "python.formatting.provider": "autopep8",
     "[python]": {
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true
