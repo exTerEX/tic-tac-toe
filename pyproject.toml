@@ -1,0 +1,31 @@
+[tool.autopep8]
+max_line_length = 79
+
+[tool.isort]
+line_length = 79
+multi_line_output = 6
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+import_heading_stdlib = "Standard Libraries"
+import_heading_thirdparty = "3rd-Party Libraries"
+import_heading_localfolder = "Local Libraries"
+
+[tool.pylint.masters]
+jobs = 0
+extension-pkg-whitelist = ["pyglet"]
+
+[tool.pylint.messages_control]
+disable = ["unsubscriptable-object", "too-many-lines"]
+
+[tool.pylint.reports]
+output-format = "text"
+reports = "yes"
+
+[tool.pylint.basic]
+good-names = ["df", "im", "fp"]
+
+[tool.pylint.format]
+expected-line-ending-format = "LF"
+max-line-length = 79
+
+[tool.pylint.miscellaneous]
+notes = ["FIXME", "TODO"]
