@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-name: "pylint"
+        dependency-type: "production"
+      - dependency-name: "autopep8"
+        dependency-type: "production"
