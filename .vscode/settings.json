@@ -1,13 +1,17 @@
 {
-    "files.exclude": {
-        "**/.git": true,
-        "**/__init__.py": true
-    },
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.formatting.provider": "yapf",
-    "[python]": {
-        "files.insertFinalNewline": true,
-        "files.trimTrailingWhitespace": true
-    }
+	"python.linting.pylintArgs": [
+		"--rcfile=pyproject.toml"
+	],
+	"python.formatting.autopep8Args": [
+		"--aggressive",
+		"--experimental"
+	],
+	"python.formatting.provider": "autopep8",
+	"python.linting.enabled": true,
+	"python.linting.pylintEnabled": true,
+	"files.exclude": {
+		"**/.git": true,
+		"**/__pycache__": true,
+		"**/__init__": false
+	}
 }
