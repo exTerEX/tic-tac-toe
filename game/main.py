@@ -2,6 +2,8 @@
 
 from tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
+import random
+
 # pyright: reportMissingImports=false
 from game import Game
 
@@ -26,6 +28,9 @@ class Interface(Frame):
         self._height = margin * 2 + side * self._grid
         self._width = margin * 2 + side * self._grid
 
+        self._player_turn = None
+        self._player_symbol = None
+
         self.init()
 
     def init(self):
@@ -39,10 +44,23 @@ class Interface(Frame):
         clear_button = Button(self, text="Clear answers", command=self._clear_answers)
         clear_button.pack(fill=BOTH, side=BOTTOM)
 
+        self.player_properties()
+
         self._draw_grid()
+
+        if not self._player_turn:
+            self.game.ai()
+            self._player_turn = True
+
         self._draw_puzzle()
 
         self.canvas.bind("<Button-1>", self._cell_clicked)
+
+    def player_properties(self):
+        self._player_turn = random.choice([True, False])
+        self._player_symbol = random.choices([+1, -1])[0]
+
+        self.game.player_symbol(self._player_symbol)
 
     def _draw_grid(self):
         margin = self._margin
@@ -93,9 +111,22 @@ class Interface(Frame):
                         margin + index * side + side / 2,
                         text=text,
                         tags="checks",
-                        fill=color)
+                        fill=color,
+                        font=("Arial", int(0.85 * self._side)))
 
     def _draw_victory(self):
+        winner = None
+        if self.game.game_over_status:
+            winner = self.game.winner
+
+        text = "Draw"
+        if winner == self._player_symbol:
+            text = "Human"
+        elif winner == -self._player_symbol:
+            text = "AI"
+
+        # TODO: Implement better victory mechanics
+
         margin = self._margin
         side = self._side
 
@@ -129,13 +160,16 @@ class Interface(Frame):
 
             row, col = int((y_pos - margin) / side), int((x_pos - margin) / side)
 
-            if self.game._useradd_puzzle[row][col] == 0:
-                self.game._useradd_puzzle[row][col] = 1  # FIXME: PROBLEEEEEM!!!
+            allowed = self.game.human(row, col)
+            if allowed:
+                self.game.ai()
 
         self._draw_puzzle()
 
     def _clear_answers(self):
-        self.canvas.delete("victory")
+        self.canvas.delete("victory", "checks")
+        self.game.reset()
+        self.player_properties()
 
     @property
     def width(self):
