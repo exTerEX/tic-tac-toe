@@ -3,13 +3,7 @@ name = "pypi"
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
-[requires]
-python_version = "3"
-
 [dev-packages]
-pylint = "*"
-autopep8 = "*"
-
-[packages]
-numpy = {version = ">=1.19,<1.20"}
-pyglet = {version = ">=1.5,<1.6"}
+pylint = { version = "2.6.0" }
+autopep8 = { version = "1.5.4" }
+pyinstaller = { version = "4.2" }
