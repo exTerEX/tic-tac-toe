@@ -5,7 +5,7 @@ from random import choice
 
 
 class Game:
-    def __init__(self, grid, mode="normal"):
+    def __init__(self, grid):
         self._useradd_puzzle = [[0] * grid for i in range(grid)]
 
         self._grid = grid
@@ -14,7 +14,6 @@ class Game:
         self._player_symbol = None
 
         self._game_over_status = False
-        self._mode = mode
 
         self._winner = None
 
@@ -41,6 +40,8 @@ class Game:
             self._winner = self._ai_symbol
         elif self._count == 0:
             self._game_over_status = True
+
+        print(self._game_over_status)
         return
 
     @property
@@ -48,25 +49,22 @@ class Game:
         return self._winner
 
     def _wins(self, player):
-        if self._mode == "normal":
-            board = self._useradd_puzzle
-            win = [
-                [board[0][0], board[0][1], board[0][2]],
-                [board[1][0], board[1][1], board[1][2]],
-                [board[2][0], board[2][1], board[2][2]],
-                [board[0][0], board[1][0], board[2][0]],
-                [board[0][1], board[1][1], board[2][1]],
-                [board[0][2], board[1][2], board[2][2]],
-                [board[0][0], board[1][1], board[2][2]],
-                [board[2][0], board[1][1], board[0][2]]
-            ]
+        board = self._useradd_puzzle
+        win = [
+            [board[0][0], board[0][1], board[0][2]],
+            [board[1][0], board[1][1], board[1][2]],
+            [board[2][0], board[2][1], board[2][2]],
+            [board[0][0], board[1][0], board[2][0]],
+            [board[0][1], board[1][1], board[2][1]],
+            [board[0][2], board[1][2], board[2][2]],
+            [board[0][0], board[1][1], board[2][2]],
+            [board[2][0], board[1][1], board[0][2]]
+        ]
 
-            if [player, player, player] * 3 in win:
-                return True
-            else:
-                return False
-        elif self._mode == "super":
-            return "Super model isn't implemented"
+        if [player, player, player] * 3 in win:
+            return True
+        else:
+            return False
 
     def _empty(self):
         cells = []
@@ -85,14 +83,17 @@ class Game:
         if player is None:
             player = self._ai_symbol
 
-        best = [player, player, inf * player]
+        if player == self._ai_symbol:
+            best = [-1, -1, -inf]
+        else:
+            best = [-1, -1, +inf]
 
         score = 0
         if depth == 0 or self._game_over_status:
             if self._wins(self._ai_symbol):
-                score = self._ai_symbol
+                score = +1
             elif self._wins(self._player_symbol):
-                score = self._player_symbol
+                score = -1
             else:
                 score = 0
 
@@ -114,29 +115,23 @@ class Game:
 
             return best
 
-    # FIXME: Some error when player start in left lower and middle corner stopping AI from working
     def ai(self):
+        self.check_win()
         if self._count == 0 or self._game_over_status:
             return
 
-        if self._mode == "normal":
-            if self._count == 9:
-                row = choice([0, 1, 2])
-                col = choice([0, 1, 2])
-            else:
-                move = self.minimax()
-                row, col = move[0], move[1]
+        if self._count == 9:
+            row = choice([0, 1, 2])
+            col = choice([0, 1, 2])
+        else:
+            move = self.minimax()
+            row, col = move[0], move[1]
 
-            self._useradd_puzzle[row][col] = self._ai_symbol
-            self._count -= 1
-            print(self._count)
-            print(self._useradd_puzzle)
-        elif self._mode == "super":
-            print("Not implemented")
-
-        print()
+        self._useradd_puzzle[row][col] = self._ai_symbol
+        self._count -= 1
 
     def human(self, row, col):
+        self.check_win()
         if self._count == 0 or self._game_over_status:
             return
 

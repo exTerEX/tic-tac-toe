@@ -9,17 +9,12 @@ from game import Game
 
 
 class Interface(Frame):
-    def __init__(self, parent, mode="normal", side=150, margin=20):
+    def __init__(self, parent, side=150, margin=20):
         Frame.__init__(self, parent)
 
         self.parent = parent
-        self._mode = mode
 
-        if mode == "normal":
-            self._grid = 3
-        elif mode == "super":
-            self._grid = 9
-            side //= 3
+        self._grid = 3
 
         self.game = Game(self._grid)
 
