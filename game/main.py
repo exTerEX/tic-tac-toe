@@ -109,18 +109,17 @@ class Interface(Frame):
                         fill=color,
                         font=("Arial", int(0.85 * self._side)))
 
-    def _draw_victory(self):
-        winner = None
         if self.game.game_over_status:
-            winner = self.game.winner
+            self._draw_victory()
+
+    def _draw_victory(self):
+        winner = self.game.winner
 
         text = "Draw"
         if winner == self._player_symbol:
-            text = "Human"
+            text = "You"
         elif winner == -self._player_symbol:
             text = "AI"
-
-        # TODO: Implement better victory mechanics
 
         margin = self._margin
         side = self._side
@@ -137,13 +136,14 @@ class Interface(Frame):
         self.canvas.create_text(
             margin + 4 * side + side / 2,
             margin + 4 * side + side / 2,
-            text="You win!",
+            text=f"{text} win!",
             tags="victory",
             fill="white",
             font=("Arial", 32))
 
     def _cell_clicked(self, event):
         if self.game.game_over_status:
+            self._draw_victory()
             return
 
         margin = self._margin

@@ -26,6 +26,7 @@ class Game:
     def reset(self):
         self._useradd_puzzle = [[0] * self._grid for i in range(self._grid)]
         self._count = 9
+        self._game_over_status = False
 
     @property
     def game_over_status(self):
@@ -41,7 +42,6 @@ class Game:
         elif self._count == 0:
             self._game_over_status = True
 
-        print(self._game_over_status)
         return
 
     @property
@@ -61,7 +61,7 @@ class Game:
             [board[2][0], board[1][1], board[0][2]]
         ]
 
-        if [player, player, player] * 3 in win:
+        if [player] * 3 in win:
             return True
         else:
             return False
@@ -99,8 +99,7 @@ class Game:
 
             return [-1, -1, score]
 
-        for cell in self._empty():
-            row, col = cell[0], cell[1]
+        for row, col in self._empty():
             self._useradd_puzzle[row][col] = self._ai_symbol
             score = self.minimax(depth=depth - 1, player=player)
             self._useradd_puzzle[row][col] = 0
@@ -130,6 +129,8 @@ class Game:
         self._useradd_puzzle[row][col] = self._ai_symbol
         self._count -= 1
 
+        self.check_win()
+
     def human(self, row, col):
         self.check_win()
         if self._count == 0 or self._game_over_status:
@@ -139,5 +140,5 @@ class Game:
             self._useradd_puzzle[row][col] = self._player_symbol
             self._count -= 1
             return True
-        else:
-            return False
+
+        self.check_win()
