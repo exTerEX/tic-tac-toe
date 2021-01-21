@@ -5,10 +5,8 @@ from random import choice
 
 
 class Game:
-    def __init__(self, grid):
-        self._useradd_puzzle = [[0] * grid for i in range(grid)]
-
-        self._grid = grid
+    def __init__(self):
+        self._useradd_puzzle = [[0] * 3 for i in range(3)]
 
         self._ai_symbol = None
         self._player_symbol = None
@@ -24,7 +22,7 @@ class Game:
         self._ai_symbol = -symbol
 
     def reset(self):
-        self._useradd_puzzle = [[0] * self._grid for i in range(self._grid)]
+        self._useradd_puzzle = [[0] * 3 for i in range(3)]
         self._count = 9
         self._game_over_status = False
 

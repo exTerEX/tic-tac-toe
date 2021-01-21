@@ -14,14 +14,12 @@ class Interface(Frame):
 
         self.parent = parent
 
-        self._grid = 3
-
-        self.game = Game(self._grid)
+        self.game = Game()
 
         self._side = side
         self._margin = margin
-        self._height = margin * 2 + side * self._grid
-        self._width = margin * 2 + side * self._grid
+        self._height = margin * 2 + side * 3
+        self._width = margin * 2 + side * 3
 
         self._player_turn = None
         self._player_symbol = None
@@ -62,10 +60,9 @@ class Interface(Frame):
         side = self._side
         height = self._height
         width = self._width
-        grid = self._grid
 
-        for index in range(grid + 1):
-            color = "black" if index % (grid / 3) == 0 else "gray"
+        for index in range(3 + 1):
+            color = "black" if index % 3 == 0 else "gray"
 
             # Vertical
             self.canvas.create_line(
@@ -88,10 +85,9 @@ class Interface(Frame):
 
         margin = self._margin
         side = self._side
-        grid = self._grid
 
-        for index in range(grid):
-            for jndex in range(grid):
+        for index in range(3):
+            for jndex in range(3):
                 answer = self.game._useradd_puzzle[index][jndex]
 
                 if answer != 0:
@@ -115,28 +111,30 @@ class Interface(Frame):
     def _draw_victory(self):
         winner = self.game.winner
 
-        text = "Draw"
+        text = ""
         if winner == self._player_symbol:
-            text = "You"
-        elif winner == -self._player_symbol:
-            text = "AI"
+            text = "You win!"
+        elif winner == -(self._player_symbol):
+            text = "AI win!"
+        elif winner is None:
+            text = "Draw!"
 
-        margin = self._margin
-        side = self._side
+        height = self._height
+        width = self._width
 
         self.canvas.create_oval(
-            margin + side * 2,
-            margin + side * 2,
-            margin + side * 7,
-            margin + side * 7,
+            int(width * 0.2),
+            int(height * 0.2),
+            int(width * 0.8),
+            int(height * 0.8),
             tags="victory",
             fill="dark orange",
             outline="orange")
 
         self.canvas.create_text(
-            margin + 4 * side + side / 2,
-            margin + 4 * side + side / 2,
-            text=f"{text} win!",
+            int(width * 0.5),
+            int(height * 0.5),
+            text=text,
             tags="victory",
             fill="white",
             font=("Arial", 32))
