@@ -4,6 +4,6 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pylint = { version = "2.7.2" }
-autopep8 = { version = "1.5.4" }
-pyinstaller = { version = "4.2" }
+pylint = { version = "*" }
+autopep8 = { version = "*" }
+pyinstaller = { version = "==4.2" }
