@@ -2,6 +2,7 @@
 
 from math import inf
 from random import choice
+import copy
 
 
 class Game:
@@ -17,6 +18,17 @@ class Game:
 
         self._count = 9
 
+    @property
+    def game_over_status(self):
+        return self._game_over_status
+
+    @property
+    def winner(self):
+        return self._winner
+
+    def board(self, row, col):
+        return self._useradd_puzzle[row][col]
+
     def player_symbol(self, symbol):
         self._player_symbol = symbol
         self._ai_symbol = -symbol
@@ -26,15 +38,135 @@ class Game:
         self._count = 9
         self._game_over_status = False
 
-    @property
-    def game_over_status(self):
-        return self._game_over_status
+    def actions(self, board):
+        possible = set()
+
+        for index, row in enumerate(board):
+            for jndex, col in enumerate(row):
+                if col == 0:
+                    possible.add((index, jndex))
+
+        return possible
+
+    def count(self, board):
+        player = 0
+        computer = 0
+
+        for y_axis in board:
+            for x_axis in y_axis:
+                if x_axis == self._player_symbol:
+                    player += 1
+                elif x_axis == self._ai_symbol:
+                    computer += 1
+
+        if player <= computer:
+            return self._player_symbol
+        else:
+            return self._ai_symbol
+
+    def result(self, board, action):
+        if len(action) != 2:
+            raise Exception("incorrect action")
+
+        if action[0] < 0 or action[0] > 2 or action[1] < 0 or action[1] > 2:
+            raise Exception("incorrect action value")
+
+        y, x = action[0], action[1]
+
+        board_copy = copy.deepcopy(board)
+
+        if board_copy[y][x] != 0:
+            raise Exception("suggested action has already been taken")
+        else:
+            board_copy[y][x] = self.count(board)
+
+        return board_copy
+
+    def _win(self, board):
+        for y in range(3):
+            if (board[y][0] == board[y][1] == board[y][2]) and (board[y][0] != 0):
+                return board[y][0]
+
+            if (board[0][y] == board[1][y] == board[2][y]) and (board[0][y] != 0):
+                return board[0][y]
+
+        if (board[0][0] == board[1][1] == board[2][2]) or (
+                board[0][2] == board[1][1] == board[2][0]) and board[1][1] != 0:
+            return board[1][1]
+
+        return None
+
+    def terminal(self, board):
+        if self._win(board) == self._player_symbol or self._win(board) == self._ai_symbol:
+            return True
+        elif 0 not in board[0] and 0 not in board[1] and 0 not in board[2]:
+            return True
+        else:
+            return False
+
+    def utility(self, board):
+        if self._win(board) == self._player_symbol:
+            return self._player_symbol
+        elif self._win(board) == self._ai_symbol:
+            return self._ai_symbol
+        else:
+            return 0
+
+    def minimax(self, board):
+        if self.terminal(board):
+            return None
+
+        if self.count(board) == self._player_symbol:
+            score = -inf
+            action_to_take = None
+
+            for action in self.actions(board):
+                min_val = self.minvalue(self.result(board, action))
+
+                if min_val > score:
+                    score = min_val
+                    action_to_take = action
+
+            return action_to_take
+
+        elif self.count(board) == self._ai_symbol:
+            score = inf
+            action_to_take = None
+
+            for action in self.actions(board):
+                max_val = self.maxvalue(self.result(board, action))
+
+                if max_val < score:
+                    score = max_val
+                    action_to_take = action
+
+            return action_to_take
+
+    def minvalue(self, board):
+        if self.terminal(board):
+            return self.utility(board)
+
+        max_value = inf
+        for action in self.actions(board):
+            max_value = min(max_value, self.maxvalue(self.result(board, action)))
+
+        return max_value
+
+    def maxvalue(self, board):
+        if self.terminal(board):
+            return self.utility(board)
+
+        min_val = -inf
+        for action in self.actions(board):
+            min_val = max(min_val, self.minvalue(self.result(board, action)))
+
+        return min_val
 
     def check_win(self):
-        if self._wins(self._player_symbol):
+        if self._win(self._useradd_puzzle) == self._player_symbol:
             self._game_over_status = True
             self._winner = self._player_symbol
-        elif self._wins(self._ai_symbol):
+        elif self._win(self._useradd_puzzle) == self._ai_symbol:
             self._game_over_status = True
             self._winner = self._ai_symbol
         elif self._count == 0:
@@ -42,86 +174,17 @@ class Game:
 
         return
 
-    @property
-    def winner(self):
-        return self._winner
-
-    def _wins(self, player):
-        board = self._useradd_puzzle
-        win = [
-            [board[0][0], board[0][1], board[0][2]],
-            [board[1][0], board[1][1], board[1][2]],
-            [board[2][0], board[2][1], board[2][2]],
-            [board[0][0], board[1][0], board[2][0]],
-            [board[0][1], board[1][1], board[2][1]],
-            [board[0][2], board[1][2], board[2][2]],
-            [board[0][0], board[1][1], board[2][2]],
-            [board[2][0], board[1][1], board[0][2]]
-        ]
-
-        if [player] * 3 in win:
-            return True
-        else:
-            return False
-
-    def _empty(self):
-        cells = []
-
-        for x, row in enumerate(self._useradd_puzzle):
-            for y, col in enumerate(row):
-                if col == 0:
-                    cells.append([x, y])
-
-        return cells
-
-    def minimax(self, depth=None, player=None):
-        if depth is None:
-            depth = self._count
-
-        if player is None:
-            player = self._ai_symbol
-
-        if player == self._ai_symbol:
-            best = [-1, -1, -inf]
-        else:
-            best = [-1, -1, +inf]
-
-        score = 0
-        if depth == 0 or self._game_over_status:
-            if self._wins(self._ai_symbol):
-                score = +1
-            elif self._wins(self._player_symbol):
-                score = -1
-            else:
-                score = 0
-
-            return [-1, -1, score]
-
-        for row, col in self._empty():
-            self._useradd_puzzle[row][col] = self._ai_symbol
-            score = self.minimax(depth=depth - 1, player=player)
-            self._useradd_puzzle[row][col] = 0
-            score[0], score[1] = row, col
-
-            if player == self._ai_symbol:
-                if score[2] > best[2]:
-                    best = score
-            else:
-                if score[2] < best[2]:
-                    best = score
-
-            return best
-
     def ai(self):
         self.check_win()
         if self._count == 0 or self._game_over_status:
             return
 
+        row, col = 0, 0
         if self._count == 9:
             row = choice([0, 1, 2])
             col = choice([0, 1, 2])
         else:
-            move = self.minimax()
+            move = self.minimax(self._useradd_puzzle)
             row, col = move[0], move[1]
 
         self._useradd_puzzle[row][col] = self._ai_symbol

@@ -88,7 +88,7 @@ class Interface(Frame):
 
         for index in range(3):
             for jndex in range(3):
-                answer = self.game._useradd_puzzle[index][jndex]
+                answer = self.game.board(index, jndex)
 
                 if answer != 0:
                     color = "black"
@@ -114,7 +114,7 @@ class Interface(Frame):
         text = ""
         if winner == self._player_symbol:
             text = "You win!"
-        elif winner == -(self._player_symbol):
+        elif winner == -1 * self._player_symbol:
             text = "AI win!"
         elif winner is None:
             text = "Draw!"
