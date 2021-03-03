@@ -2,13 +2,22 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [main]
-
-  pull_request:
-    branches: [main, stable]
+    branches:
+      - main
+      - stable
     paths-ignore:
       - "**/*.md"
       - "**/*.txt"
+      - "**/.*"
+
+  pull_request:
+    branches:
+      - main
+      - stable
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.txt"
+      - "**/.*"
 
   schedule:
     - cron: "0 0 1 * *"
