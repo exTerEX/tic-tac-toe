@@ -6,4 +6,4 @@ verify_ssl = true
 [dev-packages]
 pylint = { version = "*" }
 autopep8 = { version = "*" }
-pyinstaller = { version = "==4.2" }
+pyinstaller = { version = "==4.3" }
